@@ -5,57 +5,42 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void convert(boolean fromDecimal, Scanner scanner) {
-        String prompt1;
-        String prompt2;
-        String resultLabel;
-        String input;
-        String result = null;
-        int base;
-        if (fromDecimal) {
-            prompt1 = "Enter a number in decimal system: ";
-            prompt2 = "Enter the target base: ";
-            resultLabel = "Conversion result: ";
-        } else {
-            prompt1 = "Enter source number: ";
-            prompt2 = "Enter source base: ";
-            resultLabel = "Conversion to decimal result: ";
-        }
-        System.out.println(prompt1);
-        input = scanner.nextLine();
-        System.out.println(prompt2);
-        base = scanner.nextInt();
-        scanner.nextLine();
-
-        if (!(base == 2 || base == 8 || base == 16 )) {
-            return;
-        }
-        switch (base) {
-            case 2 : { result = fromDecimal ? Integer.toBinaryString(Integer.parseInt(input)) : Integer.toString(Integer.parseInt(input, base)); break; }
-            case 8 : {  result = fromDecimal ? Integer.toOctalString(Integer.parseInt(input)) : Integer.toString(Integer.parseInt(input, base)); break;}
-            case 16 : { result = fromDecimal ? Integer.toHexString(Integer.parseInt(input)) : Integer.toString(Integer.parseInt(input, base)); break;}
-        }
-        System.out.println(resultLabel + result +"\n");
-    }
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(java.lang.System.in);
+        int sourceBase;
+        int targetBase;
         String prompt = "";
-        while (!prompt.equals("/quit")) {
+        while (!prompt.equals("/exit")) {
 
-            System.out.println("Do you want to convert /from decimal or /to decimal? (To quit type /exit)");
+            System.out.println("Enter two numbers in format: {source base} {target base} (To quit type /exit");
             prompt = scanner.nextLine();
             switch (prompt) {
                 case "/exit":
                     java.lang.System.exit(0);
                     break;
-                case "/to":
-                    convert(false, scanner);
-                    break;
-                case "/from":
-                    convert(true, scanner);
+                default:
+                    sourceBase = Integer.valueOf(prompt.split(" ")[0]);
+                    targetBase = Integer.valueOf(prompt.split(" ")[1]);
+                    convert(sourceBase, targetBase, scanner);
+                   // convert(false, scanner);
                     break;
             }
+        }
+    }
+    public static void convert(int sourceBase, int targetBase, Scanner scanner) {
+        if ( 37 < sourceBase || sourceBase < 2 || targetBase < 2 || targetBase > 37) {
+            return;
+        }
+        String input = "";
+        BigInteger bigInput;
+        while (!input.equals("/back")) {
+            System.out.printf("Enter number in base %d to convert to base %d (To go back type /back) ", sourceBase, targetBase);
+            input = scanner.nextLine();
+            if (input.equals("/back")) {
+                return;
+            }
+            System.out.println("Conversion result: " + new BigInteger(input, sourceBase)
+                    .toString(targetBase));
         }
     }
 }
